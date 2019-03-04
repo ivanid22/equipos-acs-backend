@@ -9,9 +9,15 @@
   "author": "Ivan Diaz",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.0",
     "mongodb": "^3.1.13",
-    "mongoose": "^5.4.16"
+    "mongoose": "^5.4.16",
+    "validator": "^10.11.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.15.0"
   }
 }
