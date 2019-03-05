@@ -26,6 +26,17 @@ const UserSchema = mongoose.Schema({
     }]
 })
 
+UserSchema.methods.removeToken = function(token) {
+    var user = this;
+    return user.update({
+        $pull: {
+            tokens: {
+                token: token
+            }
+        }
+    })
+}
+
 UserSchema.methods.generateAuthToken = function() {
     var user = this;
     var authToken = {
@@ -36,6 +47,7 @@ UserSchema.methods.generateAuthToken = function() {
     user.save();
     return Promise.resolve(authToken);
 }
+
 
 UserSchema.pre('save', function(next) {
     var user = this;
