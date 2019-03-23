@@ -116,6 +116,48 @@ app.get('/ubicacion/:id', authenticate, (req, res) => {
   })
 })
 
+app.patch('/ubicacion/:id', authenticate, (req, res) => {
+  if(req.params.id && req.body.changes) {
+    Ubicacion.findOne({_id: req.params.id}, (err, ubicacion) => {
+      if(err) {
+        res.status(404).send(err)
+      }
+      else {
+        ubicacion.tipo = req.body.changes.tipo || ubicacion.tipo
+        ubicacion.nombre = req.body.changes.nombre || ubicacion.nombre
+        ubicacion.save().then((ubicacion) => {
+          res.status(200).send(ubicacion); 
+        }).catch((err) => {
+          res.status(400).send(err.message);
+        })
+      }
+    })
+  }
+  else {
+    res.status(400).send('Bad request')
+  }
+})
+
+app.delete('/ubicacion/:id', authenticate, (req, res) => {
+  if(req.params.id) {
+    Ubicacion.findOne({_id: req.params.id}, (err, ubicacion) => {
+      if(err) {
+        res.status(404).send(err.message)
+      }
+      else {
+        ubicacion.remove().then(() => {
+          res.status(200).send();
+        }).catch((err) => {
+          res.status(400).send(err.message);
+        })
+      }
+    })
+  }
+  else {
+    res.status(400).send('Bad request')
+  }
+})
+
 app.listen(3000, () => {
   console.log('Listening on port 3000')
   console.log(process.env.JWT_SECRET)
