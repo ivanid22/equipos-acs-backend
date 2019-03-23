@@ -13,3 +13,7 @@ const UbicacionSchema = new mongoose.Schema({
 });
 
 const Ubicacion = mongoose.model('Ubicacion', UbicacionSchema);
+
+module.exports = {
+    Ubicacion
+}

@@ -3,6 +3,10 @@ const bcrypt = require('bcryptjs');
 const ObjectID = require('mongodb').ObjectID;
 
 const EquipoSchema = new mongoose.Schema({
+    ubicacionId: {
+        type: ObjectID,
+        required: true
+    },
     ubicacion: {
         type: String,
         required: true,

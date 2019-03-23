@@ -48,7 +48,7 @@ UserSchema.methods.generateAuthToken = function() {
     return Promise.resolve(authToken);
 }
 
-
+//calculate password hash before saving
 UserSchema.pre('save', function(next) {
     var user = this;
     if(user.isModified('password')) {
@@ -65,6 +65,8 @@ UserSchema.pre('save', function(next) {
         next();
     }
 });
+
+
 
 const User = mongoose.model('User', UserSchema);
 

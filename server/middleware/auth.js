@@ -24,6 +24,9 @@ const authenticate = (req, res, next) => {
             }
         })
     }
+    else {
+        res.status(403).send('Not authorized');
+    }
 }
 
 module.exports = {
