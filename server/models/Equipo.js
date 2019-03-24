@@ -1,16 +1,10 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const ObjectID = require('mongodb').ObjectID;
 
 const EquipoSchema = new mongoose.Schema({
     ubicacionId: {
         type: ObjectID,
         required: true
-    },
-    ubicacion: {
-        type: String,
-        required: true,
-        default: 'Eter'
     },
     identificacion: {
         tipo: {
@@ -34,3 +28,7 @@ const EquipoSchema = new mongoose.Schema({
 });
 
 const Equipo = mongoose.model('Equipo', EquipoSchema);
+
+module.exports = {
+    Equipo
+}

@@ -1,17 +1,24 @@
 require('./config/config');
+// Deps
 const {mongoose} = require('./db/mongoose');
 const bcrypt = require('bcryptjs');
 const express = require('express');
-const {Equipo} = require('./models/Equipo');
-const {Ubicacion} = require('./models/Ubicacion');
-const {User} = require('./models/User');
 const bodyParser = require('body-parser');
+
+// Models
+const {User} = require('./models/User');
 const {authenticate} = require('./middleware/auth');
+
+// Routers
+var {ubicacionRoutes} = require('./server/ubicacionRoutes');
+var {equipoRouter} = require('./server/equipoRoutes');
 
 var app = express();
 
 app.use(bodyParser.json());
-// app.use(authenticate);
+
+app.use(ubicacionRoutes);
+app.use(equipoRouter);
 
 app.get('/', (req, res) => {
   res.send('success');
@@ -75,88 +82,6 @@ app.post('/logout', authenticate, (req, res) => {
   })
 });
 
-app.post('/ubicacion', authenticate, (req, res) => {
-   if(req.body.tipo && req.body.nombre) {
-     const ubi = new Ubicacion({
-       tipo: req.body.tipo,
-       nombre: req.body.nombre
-     });
-     ubi.save().then((ubicacion) => {
-       res.status(200).send(ubicacion)
-     }).catch((err) => {
-       res.status(400).send(err);
-     })
-   } 
-})
-
-app.get('/ubicacion', authenticate, (req, res) => {
-  Ubicacion.find({}, (err, ubicaciones) => {
-     if(err) {
-       res.status(400).send(err)
-     }
-     else {
-       res.status(200).send(ubicaciones);
-     }
-  })
-})
-
-app.get('/ubicacion/:id', authenticate, (req, res) => {
-  Ubicacion.findOne({_id: req.params.id}, (err, ubicacion) => {
-    if(err) {
-      res.status(400).send(err)
-    }
-    else {
-      if(ubicacion) {
-        res.status(200).send(ubicacion)
-      }
-      else {
-        res.status(404).send('no match')
-      }
-    }
-  })
-})
-
-app.patch('/ubicacion/:id', authenticate, (req, res) => {
-  if(req.params.id && req.body.changes) {
-    Ubicacion.findOne({_id: req.params.id}, (err, ubicacion) => {
-      if(err) {
-        res.status(404).send(err)
-      }
-      else {
-        ubicacion.tipo = req.body.changes.tipo || ubicacion.tipo
-        ubicacion.nombre = req.body.changes.nombre || ubicacion.nombre
-        ubicacion.save().then((ubicacion) => {
-          res.status(200).send(ubicacion); 
-        }).catch((err) => {
-          res.status(400).send(err.message);
-        })
-      }
-    })
-  }
-  else {
-    res.status(400).send('Bad request')
-  }
-})
-
-app.delete('/ubicacion/:id', authenticate, (req, res) => {
-  if(req.params.id) {
-    Ubicacion.findOne({_id: req.params.id}, (err, ubicacion) => {
-      if(err) {
-        res.status(404).send(err.message)
-      }
-      else {
-        ubicacion.remove().then(() => {
-          res.status(200).send();
-        }).catch((err) => {
-          res.status(400).send(err.message);
-        })
-      }
-    })
-  }
-  else {
-    res.status(400).send('Bad request')
-  }
-})
 
 app.listen(3000, () => {
   console.log('Listening on port 3000')
