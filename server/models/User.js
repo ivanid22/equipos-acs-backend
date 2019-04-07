@@ -14,6 +14,11 @@ const UserSchema = mongoose.Schema({
         minlength: 6,
         required: true
     },
+    active: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
     tokens: [{
         access: {
             type: String,
@@ -26,26 +31,24 @@ const UserSchema = mongoose.Schema({
     }]
 })
 
-UserSchema.methods.removeToken = function(token) {
+UserSchema.methods.removeToken = function(userToken) {
     var user = this;
-    return user.update({
-        $pull: {
-            tokens: {
-                token: token
-            }
-        }
-    })
+    var tokens = user.tokens;
+    var filteredTokens = tokens.filter((token) => {
+        return (token.token !== userToken)
+    });
+    user.tokens = filteredTokens;
 }
 
 UserSchema.methods.generateAuthToken = function() {
     var user = this;
-    var authToken = {
-        access: 'auth',
-        token: jwt.sign(user._id.toHexString(), process.env.JWT_SECRET)
-    };
-    user.tokens.push(authToken);
-    user.save();
-    return Promise.resolve(authToken);
+	var access = 'auth';
+	var token = jwt.sign({_id: user._id.toHexString(), access: access}, process.env.JWT_SECRET);
+
+    user.tokens = user.tokens.concat([{access, token}]);
+    return user.save().then(() => {
+        return token
+    })
 }
 
 //calculate password hash before saving

@@ -16,16 +16,13 @@ const authenticate = (req, res, next) => {
                     if(err) {
                         res.status(404).send(user);
                     }
-                    console.log(user)
-                    if(user._id.toHexString() === decoded) {
+
+                    if(user._id.toHexString() === decoded._id) {
                         next();
                     }
                 })
             }
         })
-    }
-    else {
-        res.status(403).send('Not authorized');
     }
 }
 
