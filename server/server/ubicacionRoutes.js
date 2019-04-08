@@ -39,7 +39,7 @@ ubicacionRoutes.post('/ubicacion', authenticate, (req, res) => {
          res.status(200).send(ubicacion)
        }
        else {
-         res.status(404).send('no match')
+         res.status(404).send()
        }
      }
    })
@@ -52,8 +52,7 @@ ubicacionRoutes.post('/ubicacion', authenticate, (req, res) => {
          res.status(404).send(err)
        }
        else {
-         ubicacion.tipo = req.body.changes.tipo || ubicacion.tipo
-         ubicacion.nombre = req.body.changes.nombre || ubicacion.nombre
+         Object.assign(ubicacion, req.body.changes);
          ubicacion.save().then((ubicacion) => {
            res.status(200).send(ubicacion); 
          }).catch((err) => {

@@ -18,12 +18,15 @@ equipoRouter.get('/equipo', authenticate, (req, res) => {
 
 equipoRouter.get('/equipo/:id', authenticate, (req, res) => {
     if(req.params.id) {
-        Equipo.find({_id: req.params.id}, (err, equipo) => {
+        Equipo.findOne({_id: req.params.id}, (err, equipo) => {
             if(err) {
                 res.status(404).send(err.message)
             }
-            else {
+            else if(equipo) {
                 res.status(200).send(equipo)
+            }
+            else {
+                res.status(404).send();
             }
         })
     }
@@ -58,6 +61,41 @@ equipoRouter.post('/equipo', authenticate, (req, res) => {
         })
     } else {
         res.status(400).send('Bad request')
+    }
+})
+
+equipoRouter.patch('/equipo/:id', authenticate, (req, res) => {
+    if(req.body.changes) {
+        Equipo.findOne({_id: req.params.id}, (err, equipo) => {
+            if(err) {
+                res.status(404).send();
+            }
+
+            Object.assign(equipo, req.body.changes);
+            equipo.save().then((eq) => {
+                res.status(200).send(eq);
+            }).catch((e) => {
+                res.status(400).send(e.message)
+            });
+        })
+    } else {
+        res.status(400).send('Bad request')
+    }
+})
+
+equipoRouter.delete('/equipo/:id', authenticate, (req, res) => {
+    if(req.params.id) {
+        Equipo.remove({_id: req.params.id}, (err, equipo) => {
+            if(err) {
+                res.status(404).send(err.message)
+            } else if (equipo) {
+                res.status(200).send(equipo)
+            } else {
+                res.status(404).send(err.message)
+            }
+        });
+    } else {
+        res.status(400).send('Bad request: Missing id')
     }
 })
 
