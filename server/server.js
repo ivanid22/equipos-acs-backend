@@ -14,6 +14,7 @@ const {authenticate} = require('./middleware/auth');
 var {ubicacionRoutes} = require('./server/ubicacionRoutes');
 var {equipoRouter} = require('./server/equipoRouter');
 var {usersRouter} = require('./server/usersRouter');
+var {movimientoRouter} = require('./server/movimientoRouter');
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(cors());
 app.use(ubicacionRoutes);
 app.use(equipoRouter);
 app.use(usersRouter);
+app.use(movimientoRouter);
 
 app.get('/', (req, res) => {
   res.send('success');
