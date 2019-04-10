@@ -15,6 +15,7 @@ var {ubicacionRoutes} = require('./server/ubicacionRoutes');
 var {equipoRouter} = require('./server/equipoRouter');
 var {usersRouter} = require('./server/usersRouter');
 var {movimientoRouter} = require('./server/movimientoRouter');
+var {eventoRouter} = require('./server/eventoRouter');
 
 var app = express();
 
@@ -25,9 +26,10 @@ app.use(ubicacionRoutes);
 app.use(equipoRouter);
 app.use(usersRouter);
 app.use(movimientoRouter);
+app.use(eventoRouter);
 
 app.get('/', (req, res) => {
-  res.send('success');
+  res.send();
 });
 
 app.listen(3000, () => {
