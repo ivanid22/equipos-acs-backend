@@ -7,26 +7,47 @@ const {Ubicacion} = require('../models/Ubicacion');
 var movimientoRouter = express.Router();
 
 movimientoRouter.post('/movimiento', authenticate, (req, res) => {
-    const {origenId, destinoId, descripcion, dateInicio, dateFin, estado} = req.body;
+    const {origenId, destinoId, descripcion, dateInicio, dateFin, estado, equipoId} = req.body;
     var mov = new Movimiento({
         origenId,
         destinoId,
         descripcion,
         dateInicio,
         dateFin,
+        equipoId,
         estado: estado || undefined
     });
-    mov.save().then((m) => {
-        if(m) {
-            res.send(m);
+
+    var equipo = Equipo.findById(equipoId, (err, eq) => {
+        if(err) {
+            res.status(404).send();
+        }
+        else if (eq) {
+            eq.ubicacionId = destinoId;
+            console.log(req.body);
+            eq.save().then((esaved) => {
+                if(esaved) {
+                    mov.save().then((m) => {
+                        if (m) {
+                            res.send(m);
+                        }
+                        else {
+                            res.status(401).send();
+                        }
+                    }).catch((e) => {
+                        res.status(402).send(e.message);
+                    })
+                }
+            }).catch((err) => {
+                res.status(403).send(err.message);
+            })
         }
         else {
-            res.status(400).send();
+            res.status(500).send();
         }
-    }).catch((e) => {
-        res.status(400).send(e.message);
-    })
+    });
 });
+
 
 movimientoRouter.get('/movimiento', authenticate, (req, res) => {
     Movimiento.find({}, (err, movs) => {

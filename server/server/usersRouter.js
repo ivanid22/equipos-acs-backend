@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 
 var usersRouter = express.Router();
 
-usersRouter.post('/users', (req, res) => {
+usersRouter.post('/user', (req, res) => {
     var newUser = new User({
         username: req.body.username,
         password: req.body.password

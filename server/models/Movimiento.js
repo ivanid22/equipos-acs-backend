@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var ObjectID = require('mongodb').ObjectID;
 var moment = require('moment');
 var {Ubicacion} = require('./Ubicacion');
+var {Equipo} = require('./Equipo');
 
 const ubicacionExists = (v, cb) => {
     Ubicacion.findById(v, (err, ubicacion) => {
@@ -14,6 +15,18 @@ const ubicacionExists = (v, cb) => {
         cb(false);
     })
     
+}
+
+const equipoExists = (v, cb) => {
+    Equipo.findById(v, (err, equipo) => {
+        if(err) {
+            cb(false);
+        }
+        else if (equipo) {
+            cb(true);
+        }
+        cb(false)
+    })
 }
 
 const MovimientoSchema = new mongoose.Schema({
@@ -31,6 +44,14 @@ const MovimientoSchema = new mongoose.Schema({
         validate: {
             isAsync: true,
             validator: ubicacionExists
+        }
+    },
+    equipoId: {
+        type: ObjectID,
+        required: true,
+        validate: {
+            isAsync: true,
+            validator: equipoExists
         }
     },
     descripcion: {

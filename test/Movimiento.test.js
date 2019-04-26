@@ -6,6 +6,8 @@ var {Movimiento} = require('../server/models/Movimiento');
 var moment = require('moment');
 var expect = require('expect');
 
+
+
 it('create instance of Movimiento', function(done) {
     const oid = new ObjectID();
     const now = moment();

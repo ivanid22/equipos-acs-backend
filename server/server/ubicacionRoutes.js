@@ -51,7 +51,7 @@ ubicacionRoutes.post('/ubicacion', authenticate, (req, res) => {
        if(err) {
          res.status(404).send(err)
        }
-       else {
+       else if(ubicacion) {
          Object.assign(ubicacion, req.body.changes);
          ubicacion.save().then((ubicacion) => {
            res.status(200).send(ubicacion); 
@@ -59,6 +59,9 @@ ubicacionRoutes.post('/ubicacion', authenticate, (req, res) => {
            res.status(400).send(err.message);
          })
        }
+	   else {
+		   res.status(400).send();
+	   }
      })
    }
    else {
@@ -73,8 +76,8 @@ ubicacionRoutes.post('/ubicacion', authenticate, (req, res) => {
          res.status(404).send(err.message)
        }
        else {
-         ubicacion.remove().then(() => {
-           res.status(200).send();
+         ubicacion.remove().then((dub) => {
+           res.status(200).send(dub);
          }).catch((err) => {
            res.status(400).send(err.message);
          })

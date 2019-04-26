@@ -68,15 +68,19 @@ equipoRouter.patch('/equipo/:id', authenticate, (req, res) => {
     if(req.body.changes) {
         Equipo.findOne({_id: req.params.id}, (err, equipo) => {
             if(err) {
+                res.status(404).send(err.message);
+            } else if (equipo) {
+                Object.assign(equipo, req.body.changes);
+                equipo.save().then((eq) => {
+                    res.status(200).send(eq);
+                }).catch((e) => {
+                    res.status(400).send(e.message)
+                });
+            }
+            else {
                 res.status(404).send();
             }
-
-            Object.assign(equipo, req.body.changes);
-            equipo.save().then((eq) => {
-                res.status(200).send(eq);
-            }).catch((e) => {
-                res.status(400).send(e.message)
-            });
+            
         })
     } else {
         res.status(400).send('Bad request')

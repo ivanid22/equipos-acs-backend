@@ -14,7 +14,7 @@ const authenticate = (req, res, next) => {
             if(user) {
                 jwt.verify(reqToken, process.env.JWT_SECRET, (err, decoded) => {
                     if(err) {
-                        res.status(404).send(user);
+                        res.status(401).send();
                     }
 
                     if(user._id.toHexString() === decoded._id) {
@@ -23,6 +23,9 @@ const authenticate = (req, res, next) => {
                 })
             }
         })
+    }
+    else {
+        res.status(401).send();
     }
 }
 
