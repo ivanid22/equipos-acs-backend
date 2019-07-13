@@ -11,7 +11,7 @@ const authenticate = (req, res, next) => {
             if(err) {
                 res.status(400).send(err.message);
             }
-            if(user) {
+            else if(user) {
                 jwt.verify(reqToken, process.env.JWT_SECRET, (err, decoded) => {
                     if(err) {
                         res.status(401).send();
@@ -21,6 +21,9 @@ const authenticate = (req, res, next) => {
                         next();
                     }
                 })
+            }
+            else {
+                res.status(403).send();
             }
         })
     }
