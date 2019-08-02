@@ -23,25 +23,28 @@ usersRouter.post('/user', (req, res) => {
 usersRouter.post('/login', (req, res) => {
     User.findOne({ username: req.body.username }, (err, user) => {
         if (err) {
-            res.status(400).send(err);
+            res.status(404).send({error: err});
         }
-        if (user) {
+        else if (user) {
             bcrypt.compare(req.body.password, user.password, (err, success) => {
                 if (err) {
-                    res.status(400).send({
+                    res.status(401).send({
                         password: req.password,
                         username: user.username
                     });
                 }
-                if (success) {
+                else if (success) {
                     user.generateAuthToken().then((token) => {
                         res.header('x-auth', token.token).status(200).send(token);
-                    }).catch(e => res.status(400).send(e.message))
+                    }).catch(e => res.status(500).send(e.message))
+                }
+                else {
+                    res.status(401).send({error: 'Incorrect password'})
                 }
             })
         }
         else {
-            res.status(404).send();
+            res.status(404).send({error: 'User not found'});
         }
     })
 })
@@ -54,11 +57,14 @@ usersRouter.post('/logout', authenticate, (req, res) => {
         if (err) {
             res.status(404).send();
         }
-        if (user) {
+        else if (user) {
             user.removeToken(currentToken);
             user.save().then(() => {
                 res.status(200).send();
             })
+        }
+        else {
+            res.status(500).send({error: 'unable to process token'})
         }
     })
 });
