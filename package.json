@@ -23,6 +23,6 @@
   "devDependencies": {
     "eslint": "^5.15.0",
     "expect": "^24.7.1",
-    "mocha": "^6.1.2"
+    "mocha": "^10.2.0"
   }
 }
